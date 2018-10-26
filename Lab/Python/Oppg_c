@@ -41,12 +41,56 @@ print(mean_squared_error(Ir,irmse))
 
 
 
-#Irlog = np.log(Ir)
-#reg = np.polyfit(filt,Irlog,1)
-#msg = ("V(Ir) = %.3f + %.3fx" %(reg[1],reg[0]))
-#plt.plot(filt,Irlog,"-o",label=msg)
-#plt.xlabel("Ekstra Aluminiumsfilter [mm]")
-#plt.ylabel("log(Ione rate) [nA]")
-#plt.legend()
-#plt.title("Ione rate som funksjon ektra kobber", fontsize = 16, fontweight="bold", y=1.08)
-#plt.show()
+ilog = np.log(Ir)
+reg = np.polyfit(filt,ilog,1)
+irfit = np.polyval(reg,x)
+irmse = np.polyval(reg,filt)
+msg = "Tilpasning: -%.3f - %.3fx" %(abs(reg[1]),abs(reg[0]))
+plt.plot(x,irfit,"--",label=msg)
+plt.plot(filt,ilog,"o", label="Naturlig logaritme av målinger")
+plt.xlabel("Ekstra kobberfilter [mm]",fontsize = 14)
+plt.ylabel("Ionerate [nA]",fontsize = 14)
+plt.grid(linestyle='-', linewidth=0.5)
+plt.title("Ionerate som funksjon ektra aluminiumsfilter", fontsize = 16, fontweight="bold", y=1.08)
+plt.legend()
+plt.show()
+
+print("MSE", mean_squared_error(Ir,irmse))
+
+V = np.linspace(1e1,2.2e2,22)
+murho = [2.141E+2, 3.359E+1, 1.090E+1, 4.854E+0, 2.619E+0, 1.593E+0, 1.063E+0, 7.631E-1, 5.796E-1, 4.604E-1, 3.782E-1, 3.216E-1, 2.789E-1, 2.467E-1, 2.226E-1, 2.032E-1, 1.882E-1, 1.751E-1, 1.653E-1, 1.560E-1, 1.489E-1, 1.424E-1]
+rho = 2.7 #g/cm^3
+
+mueff = np.log(2)/(x[hvl]) * (1/1e-1)
+print("HVL mueff", mueff)
+mueff = -reg[0]*(1/1e-1)
+print("reg mueff", mueff)
+hvl2 = np.log(2)/mueff #1/cm
+print("HVL-2",hvl2)
+murhoeff = mueff/rho #cm^2/g
+
+val = 1e10
+find = 0
+for i in range(len(murho)):
+    if(abs(murho[i]-murhoeff) < val):
+        val = murho[i]-murhoeff
+        find = i
+fig, ax1 = plt.subplots()
+
+
+ax1.plot(V,murho,"-",label="Al attenuasjons koef.")
+ax1.plot([min(V),max(V)],[murhoeff,murhoeff],"--",label="HVL attenuasjons koef.")
+plt.ylabel("$\mu/\\rho$ [cm$^2$/g]",fontsize = 14)
+plt.xlabel("Foton energi [keV]",fontsize = 14)
+plt.title('Effektiv energi m/Al filter ved HVL attenuasjon koef.', fontsize = 16, fontweight="bold", y=1.08)
+plt.legend()
+
+
+mi = find-2
+left, bottom, width, height = [0.55, 0.40, 0.3, 0.3]
+ax2 = fig.add_axes([left, bottom, width, height])
+ax2.plot(V[mi:find+5],murho[mi:find+5],"-o")
+ax2.plot([min(V[mi:find+5]),max(V[mi:find+5])],[murhoeff,murhoeff],"--")
+plt.show()
+print(murhoeff,murho[find],V[find])
+
