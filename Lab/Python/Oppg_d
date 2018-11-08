@@ -55,4 +55,6 @@ plt.title("Ionerate som funksjon ektra kobberfilter", fontsize = 16, fontweight=
 plt.legend()
 plt.show()
 
+print(reg)
+print("HVL = ",np.log(2)/abs(reg[0]))
 print(mean_squared_error(Ir,irmse))
