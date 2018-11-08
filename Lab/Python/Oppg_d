@@ -57,6 +57,11 @@ plt.title("Ionerate som funksjon ektra kobberfilter", fontsize = 16, fontweight=
 plt.legend()
 plt.show()
 
+<<<<<<< HEAD
+print(reg)
+print("HVL = ",np.log(2)/abs(reg[0]))
+print(mean_squared_error(Ir,irmse))
+=======
 print("MSE", mean_squared_error(Ir,irmse))
 
 V = np.linspace(1e1,2.2e2,22)
@@ -96,3 +101,4 @@ ax2.plot([min(V[mi:find+5]),max(V[mi:find+5])],[murhoeff,murhoeff],"--")
 plt.show()
 print(murhoeff,murho[find],V[find])
 
+>>>>>>> cdd2e1791901f992260d9bdeaa5e946f0744a8f0
